@@ -1,0 +1,37 @@
+---
+services:
+  dind:
+    image: docker:dind
+    container_name: dind
+    hostname: dind
+    restart: always
+    privileged: true
+    volumes:
+      - dind-storage:/var/lib/docker
+      - dind-certs:/certs/client
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    command:
+      - --storage-driver=overlay2
+    networks:
+      default:
+        aliases:
+          - docker
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:v18.2.0
+    container_name: gitlab-runner
+    restart: always
+    depends_on:
+      - dind
+    volumes:
+      - ./config:/etc/gitlab-runner
+      - dind-certs:/certs/client:ro
+    environment:
+      - DOCKER_HOST=tcp://dind:2376
+      - DOCKER_TLS_CERTDIR=/certs/client
+      - DOCKER_TLS_VERIFY=1
+
+volumes:
+  dind-storage:
+  dind-certs:
