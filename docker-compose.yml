@@ -9,6 +9,7 @@ services:
     volumes:
       - dind-storage:/var/lib/docker
       - dind-certs:/certs/client
+      - dind-sock:/var/run
     environment:
       - DOCKER_TLS_CERTDIR=/certs
     command:
@@ -27,11 +28,13 @@ services:
     volumes:
       - ./config:/etc/gitlab-runner
       - dind-certs:/certs/client:ro
-    environment:
-      - DOCKER_HOST=tcp://dind:2376
-      - DOCKER_TLS_CERTDIR=/certs/client
-      - DOCKER_TLS_VERIFY=1
+      - dind-sock:/var/run
+      # environment:
+      #   - DOCKER_HOST=tcp://dind:2376
+      #   - DOCKER_TLS_CERTDIR=/certs/client
+      #   - DOCKER_TLS_VERIFY=1
 
 volumes:
   dind-storage:
   dind-certs:
+  dind-sock:
