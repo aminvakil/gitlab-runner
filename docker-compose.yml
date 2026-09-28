@@ -20,7 +20,7 @@ services:
           - docker
 
   gitlab-runner:
-    image: gitlab/gitlab-runner:v19.4.0
+    image: gitlab/gitlab-runner:v19.4.1
     container_name: gitlab-runner
     restart: always
     depends_on:
